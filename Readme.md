@@ -39,7 +39,7 @@ Use this specification for bypass processing.
 
 We created an Android XposedModule as a way to rewrite the "system.certs.enabled" system property.
 
-The XposedModule app created in the "OverrideSysPropModule/app/release" folder is placed in the "OverrideSysPropModule/app/release" folder.
+The created XposedModule app is placed in the "OverrideSysPropModule/app/release" folder.
 
 ## procedure (Emulator)
 
