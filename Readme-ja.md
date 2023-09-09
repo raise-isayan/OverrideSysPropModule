@@ -1,16 +1,20 @@
-# Android 14 の Root証明書インストールバイパス
+Android 14 の Root証明書インストールバイパス
+=============
+
+Language/[English](Readme.md)
 
 ## 概要
 
-Android 14 では信頼されたRoot証明書へのインストールが困難になっている｡
+Android 14 以降では信頼されたRoot証明書へのインストールが困難になっている｡
 
 - https://httptoolkit.com/blog/android-14-breaks-system-certificate-installation/
 
-本制限を回避するための方法を示す。
+本制限をバイパスするための方法を示す。
 
-## 回避概要
+## バイパスポイント
 
-証明書を読み込む処理にて、「/apex/com.android.conscrypt/cacerts」から読み込むようになっているがシステムプロパティが「system.certs.enabled」となっている場合は、以前の「/system/etc/security/cacerts/」より証明書を取得するコードになっている。
+API-34 よりシステムの証明書を読み込む処理にて、「/apex/com.android.conscrypt/cacerts」より証明書読み込むようになっているが
+システムプロパティが「system.certs.enabled」となっている場合は、以前の「/system/etc/security/cacerts/」より証明書を取得するコードになっている。
 
 - https://android-review.googlesource.com/c/platform/prebuilts/fullsdk/sources/+/2704396/1/android-34/android/security/net/config/SystemCertificateSource.java
 
@@ -29,28 +33,29 @@ private static File getDirectory() {
 }
 ````
 
-回避するために本挙動を利用します。
+バイパスを行うためにこの仕様を利用します。
 
-## 具体的な方法
+## concrete procedure
 
-「system.certs.enabled」のシステムプロパティを書き換える方法として、Android の XposedModule を作成することで行う。
+「system.certs.enabled」のシステムプロパティを書き換える方法として、Android の XposedModule を作成しました。
 
-
-「OverrideSysPropModule」フォルダに作成した XposedModule をおいている。
+「OverrideSysPropModule/app/release」フォルダに作成した XposedModule のアプリを置いています。
 
 ## 手順 (Emulator)
 
-エミュレータの場合、以下の手順でMagiskをインストールする。
+### Magisk をインストール
 
-+ https://github.com/newbit1/rootAVD より git cloneを行う
+エミュレータの場合、以下の手順で Magisk をインストールする。
+
+1. https://github.com/newbit1/rootAVD より git cloneを行う
 
 ```
 git clone https://github.com/newbit1/rootAVD.git
 ```
-+ エミュレータを起動
-+ 管理画面の PowerShell から以下のコマンドを実行
+2. エミュレータを起動する。
+3. 管理画面の PowerShell から以下のコマンドを実行しインストールするADVを確認する。
 
-```
+```sh
 .\rootAVD.bat ListAllAVDs
 
 ...
@@ -69,43 +74,41 @@ rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img In
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallPrebuiltKernelModules GetUSBHPmodZ PATCHFSTAB DEBUG
 ```
 
-### 最新の Magisk をインストール
-
-+ 最新のMagsiskを以下よりダウンロード
+4. 最新の Magsisk をダウンロード
 
 - https://github.com/topjohnwu/Magisk/releases
 
-+ 「rootAVD\Apps」のフォルダにコピーする。
-+ 最新の Magisk をインストール
+5. 「rootAVD/Apps」のフォルダにダウンロードしたMagiskアプリをコピーする。
+6. 最新の Magisk を含めてインストール
 
-以下のコマンドを実行
-
-```
+```sh
 .\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img
 ```
 
 ### Magisk Module をインストール
 
-以下のMagisk Module をインストールする。
+1. Magisk Module をインストールする。
 
 - https://github.com/NVISOsecurity/MagiskTrustUserCerts/releases
 - https://github.com/LSPosed/LSPosed/releases (zygisk 版をインストール)
 
-必要に応じて以下をインストール
+必要に応じてインストール
 
 - https://github.com/LSPosed/LSPosed.github.io/releases
 
 ### XposedModule Module をインストール
 
-「OverrideSysPropModule」フォルダ内の XposedModule をインストール。
+1. 「OverrideSysPropModule」フォルダ内の XposedModule をインストール。
 
 ````
 cd OverrideSysPropModule\app\release
 adb install app-release.apk
 ````
 
-### Moduleを適用したいアプリに対して有効にする。
+2. ユーザ証明書にBurpなどのRoot証明書をインストールする。
+
+3. Moduleを適用したいアプリに対して有効にする。
 
 ![OverrideSysProp](images/OverrideSysProp.png)
 
-TIP:  端末を再起動しないとうまく認識しない場合がある。
+TIP:  XposedModule有効後、Android端末を再起動しないとうまく認識しない場合がある。
