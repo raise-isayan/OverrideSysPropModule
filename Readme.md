@@ -35,15 +35,29 @@ private static File getDirectory() {
 
 Use this specification for bypass processing.
 
-## concept
+## concrete procedure
 
-We created an Android XposedModule as a way to rewrite the "system.certs.enabled" system property.
+Script by [Frida](https://frida.re/) to rewrite the system property "system.certs.enabled".
+
+````js
+setImmediate(function () {
+  console.log("[*] Starting script");
+  Java.perform(function () {
+    var systemClass = Java.use("java.lang.System");
+    systemClass.setProperty("system.certs.enabled","true");
+  })
+})
+````
+
+In this case, the Frida script must be specified at startup.
+Android XposedModule has created an always available application.
 
 The created XposedModule app is placed in the "OverrideSysPropModule/app/release" folder.
 
 ## procedure (Emulator)
 
 ### Install Magisk 
+
 For emulators, install Magisk according to the following procedure.
 
 1. https://github.com/newbit1/rootAVD Perform git clone from

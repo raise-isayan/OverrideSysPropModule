@@ -35,9 +35,22 @@ private static File getDirectory() {
 
 バイパスを行うためにこの仕様を利用します。
 
-## concrete procedure
+## 具体的な手順
 
-「system.certs.enabled」のシステムプロパティを書き換える方法として、Android の XposedModule を作成しました。
+「system.certs.enabled」のシステムプロパティを書き換える方法として、[Frida](https://frida.re/) によるスクリプトが利用できます
+
+````js
+setImmediate(function () {
+  console.log("[*] Starting script");
+  Java.perform(function () {
+    var systemClass = Java.use("java.lang.System");
+    systemClass.setProperty("system.certs.enabled","true");
+  })
+})
+````
+
+In this case, the Frida script must be specified at startup.
+Android XposedModule has created an always available application.
 
 「OverrideSysPropModule/app/release」フォルダに作成した XposedModule のアプリを置いています。
 
