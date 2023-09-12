@@ -5,13 +5,13 @@ Language/[日本語](Readme-ja.md)
 
 ## Overview
 
-Android 14 or later has difficulty installing to trusted Root certificates.
+Android 14 and later make it difficult to install a trusted Root certificate on the system.
 
 - https://httptoolkit.com/blog/android-14-breaks-system-certificate-installation/
 
-Show how to bypass restrictions.
+Describe the steps to bypass.
 
-## bypass point
+## Bypass point
 
 API-34 has been reading certificates from "/apex/com.android.conscrypt/cacerts" in the process of reading system certificates.
 However, when the system property is set to "system.certs.enabled", the code is to retrieve certificates from "/system/etc/security/cacerts/".
@@ -50,6 +50,8 @@ setImmediate(function () {
 ````
 
 In this case, the Frida script must be specified at startup.
+It is also inconvenient for use with multiple applications.
+
 Android XposedModule has created an always available application.
 
 The created XposedModule app is placed in the "OverrideSysPropModule/app/release" folder.
@@ -60,14 +62,13 @@ The created XposedModule app is placed in the "OverrideSysPropModule/app/release
 
 For emulators, install Magisk according to the following procedure.
 
-1. https://github.com/newbit1/rootAVD Perform git clone from
+1. Do a git clone from https://github.com/newbit1/rootAVD
 
 ```
 git clone https://github.com/newbit1/rootAVD.git
 ```
 
 2. Start the emulator.
-
 3. Execute the following command from PowerShell on the administration screen to confirm the ADV to be installed.
 
 ```sh
@@ -89,19 +90,45 @@ rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img In
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallPrebuiltKernelModules GetUSBHPmodZ PATCHFSTAB DEBUG
 ```
 
-4. Download the latest Magsisk
+4. run ADV corresponding to API
+
+```sh
+.\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
+```
+
+A 60-second wait is performed, which is terminated by pressing the Enter key.
+
+```sh
+[!] Temporarily installing Magisk
+[*] Detecting current user
+[-] Current user 0
+[-] Starting Magisk
+[*] Install/Patch /sdcard/Download/fakeboot.img and hit Enter when done(max. 60s)
+
+5. Download Magisk
 
 - https://github.com/topjohnwu/Magisk/releases
 
-5. copy the downloaded Magisk application to the folder "rootAVD/Apps"
-6. install Magisk including the latest
+6. Install the latest Magisk
 
 ```sh
-.\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img
+adb install Magisk.v2x.x.apk
 ```
 
-### Install Magisk Module 
+7. Select "/sdcard/Download/fakeboot.img" from Select and Patch a File in Magisk Install to create the patch.
 
+8. re-run ADV corresponding to API
+
+```sh
+.\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
+
+9. Enable "Zygisk" and "Enforce DenyList".
+
+10. Reboot the system.
+
+### Install Magisk Module
+
+```
 1. Install Magisk Module.
 
 - https://github.com/NVISOsecurity/MagiskTrustUserCerts/releases

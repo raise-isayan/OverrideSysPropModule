@@ -5,15 +5,15 @@ Language/[English](Readme.md)
 
 ## 概要
 
-Android 14 以降では信頼されたRoot証明書へのインストールが困難になっている｡
+Android 14 以降では信頼されたRoot証明書をシステムにインストールすることが困難になっている｡
 
 - https://httptoolkit.com/blog/android-14-breaks-system-certificate-installation/
 
-本制限をバイパスするための方法を示す。
+バイパスの手順を説明する。
 
 ## バイパスポイント
 
-API-34 よりシステムの証明書を読み込む処理にて、「/apex/com.android.conscrypt/cacerts」より証明書読み込むようになっているが
+API-34 よりシステムの証明書を読み込む処理にて、「/apex/com.android.conscrypt/cacerts」から証明書読み込む処理になっているが
 システムプロパティが「system.certs.enabled」となっている場合は、以前の「/system/etc/security/cacerts/」より証明書を取得するコードになっている。
 
 - https://android-review.googlesource.com/c/platform/prebuilts/fullsdk/sources/+/2704396/1/android-34/android/security/net/config/SystemCertificateSource.java
@@ -49,8 +49,9 @@ setImmediate(function () {
 })
 ````
 
-In this case, the Frida script must be specified at startup.
-Android XposedModule has created an always available application.
+この場合、起動時にFridaスクリプトを指定する必要があります。また複数のアプリに適用するには不便です。
+
+常に利用できる方法として Android の XposedModule を作成しました。
 
 「OverrideSysPropModule/app/release」フォルダに作成した XposedModule のアプリを置いています。
 
@@ -87,16 +88,43 @@ rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img In
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallPrebuiltKernelModules GetUSBHPmodZ PATCHFSTAB DEBUG
 ```
 
-4. 最新の Magsisk をダウンロード
+4. APIに対応したADVを実行
+
+```sh
+.\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
+```
+
+60秒のウェイトが行われるのでエンターキーで終了する。
+
+```sh
+[!] Temporarily installing Magisk
+[*] Detecting current user
+[-] Current user 0
+[-] Starting Magisk
+[*] Install/Patch /sdcard/Download/fakeboot.img and hit Enter when done(max. 60s)
+```
+
+5. Magisk をダウンロードする
 
 - https://github.com/topjohnwu/Magisk/releases
 
-5. 「rootAVD/Apps」のフォルダにダウンロードしたMagiskアプリをコピーする。
-6. 最新の Magisk を含めてインストール
+6. 最新の Magisk をインストール
 
 ```sh
-.\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img
+adb install Magisk.v2x.x.apk
 ```
+
+7. Magiskの Install の Select and Patch a File から "/sdcard/Download/fakeboot.img" を選択してパッチの作成。
+
+
+8. 再度APIに対応したADVを実行
+
+```sh
+.\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
+```
+9. 「Zygisk」および「Enforce DenyList」を有効にする。
+
+10. 再起動する。
 
 ### Magisk Module をインストール
 
