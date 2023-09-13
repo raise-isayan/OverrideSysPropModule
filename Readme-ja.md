@@ -51,9 +51,9 @@ setImmediate(function () {
 
 この場合、起動時にFridaスクリプトを指定する必要があります。また複数のアプリに適用するには不便です。
 
-常に利用できる方法として Android の XposedModule を作成しました。
+常に利用できる方法として Android の Xposed Module を作成しました。
 
-「OverrideSysPropModule/app/release」フォルダに作成した XposedModule のアプリを置いています。
+「OverrideSysPropModule/app/release」フォルダに作成した Xposed　Module のアプリを置いています。
 
 ## 手順 (Emulator)
 
@@ -63,13 +63,13 @@ setImmediate(function () {
 
 1. https://github.com/newbit1/rootAVD より git cloneを行う
 
-```
+````sh
 git clone https://github.com/newbit1/rootAVD.git
-```
+````
 2. エミュレータを起動する。
 3. 管理画面の PowerShell から以下のコマンドを実行しインストールするADVを確認する。
 
-```sh
+````sh
 .\rootAVD.bat ListAllAVDs
 
 ...
@@ -86,45 +86,44 @@ rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img re
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallKernelModules
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallPrebuiltKernelModules
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallPrebuiltKernelModules GetUSBHPmodZ PATCHFSTAB DEBUG
-```
+````
 
 4. APIに対応したADVを実行
 
-```sh
+````sh
 .\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
-```
+````
 
-60秒のウェイトが行われるのでエンターキーで終了する。
+5. 60秒のウェイトが行われるのでエンターキーで終了する。
 
-```sh
+````sh
 [!] Temporarily installing Magisk
 [*] Detecting current user
 [-] Current user 0
 [-] Starting Magisk
 [*] Install/Patch /sdcard/Download/fakeboot.img and hit Enter when done(max. 60s)
-```
+````
 
-5. Magisk をダウンロードする
+6. Magisk をダウンロードする
 
 - https://github.com/topjohnwu/Magisk/releases
 
-6. 最新の Magisk をインストール
+7. 最新の Magisk をインストール
 
 ```sh
 adb install Magisk.v2x.x.apk
 ```
 
-7. Magiskの Install の Select and Patch a File から "/sdcard/Download/fakeboot.img" を選択してパッチの作成。
+8. Magiskの Install の Select and Patch a File から "/sdcard/Download/fakeboot.img" を選択してパッチの作成。
 
+9. 再度APIに対応したADVを実行
 
-8. 再度APIに対応したADVを実行
-
-```sh
+````sh
 .\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
-```
-9. 「Zygisk」および「Enforce DenyList」を有効にする。
+````
+10. 「Zygisk」および「Enforce DenyList」を有効にする。
 
-10. 再起動する。
+11. 再起動する。
 
 ### Magisk Module をインストール
 
@@ -137,13 +136,13 @@ adb install Magisk.v2x.x.apk
 
 - https://github.com/LSPosed/LSPosed.github.io/releases
 
-### XposedModule Module をインストール
+### Xposed Module をインストール
 
-1. 「OverrideSysPropModule」フォルダ内の XposedModule をインストール。
+1. 「OverrideSysPropModule」フォルダ内の Xposed Module をインストール。
 
-````
+````sh
 cd OverrideSysPropModule\app\release
-adb install app-release.apk
+adb install OverrideSysprop.apk
 ````
 
 2. ユーザ証明書にBurpなどのRoot証明書をインストールする。
@@ -152,4 +151,5 @@ adb install app-release.apk
 
 ![OverrideSysProp](images/OverrideSysProp.png)
 
-TIP:  XposedModule有効後、Android端末を再起動しないとうまく認識しない場合がある。
+TIP:  Xposed Module有効後、Android端末を再起動しないとうまく認識しない場合がある。
+

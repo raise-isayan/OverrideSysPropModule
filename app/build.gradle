@@ -16,6 +16,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "OverrideSysprop.apk"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false

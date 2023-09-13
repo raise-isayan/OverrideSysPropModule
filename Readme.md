@@ -64,14 +64,14 @@ For emulators, install Magisk according to the following procedure.
 
 1. Do a git clone from https://github.com/newbit1/rootAVD
 
-```
+````
 git clone https://github.com/newbit1/rootAVD.git
-```
+````
 
 2. Start the emulator.
 3. Execute the following command from PowerShell on the administration screen to confirm the ADV to be installed.
 
-```sh
+````sh
 .\rootAVD.bat ListAllAVDs
 
 ...
@@ -88,15 +88,15 @@ rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img re
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallKernelModules
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallPrebuiltKernelModules
 rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img InstallPrebuiltKernelModules GetUSBHPmodZ PATCHFSTAB DEBUG
-```
+````
 
 4. run ADV corresponding to API
 
-```sh
+````sh
 .\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
-```
+````
 
-A 60-second wait is performed, which is terminated by pressing the Enter key.
+5. A 60-second wait is performed, which is terminated by pressing the Enter key.
 
 ```sh
 [!] Temporarily installing Magisk
@@ -104,31 +104,32 @@ A 60-second wait is performed, which is terminated by pressing the Enter key.
 [-] Current user 0
 [-] Starting Magisk
 [*] Install/Patch /sdcard/Download/fakeboot.img and hit Enter when done(max. 60s)
+```
 
-5. Download Magisk
+6. Download Magisk
 
 - https://github.com/topjohnwu/Magisk/releases
 
-6. Install the latest Magisk
+7. Install the latest Magisk
 
-```sh
+````sh
 adb install Magisk.v2x.x.apk
-```
+````
 
-7. Select "/sdcard/Download/fakeboot.img" from Select and Patch a File in Magisk Install to create the patch.
+8. Select "/sdcard/Download/fakeboot.img" from Select and Patch a File in Magisk Install to create the patch.
 
-8. re-run ADV corresponding to API
+9. re-run ADV corresponding to API
 
-```sh
+````sh
 .\rootAVD.bat system-images\android-34\google_apis_playstore\x86_64\ramdisk.img FAKEBOOTIMG
+````
 
-9. Enable "Zygisk" and "Enforce DenyList".
+10. Enable "Zygisk" and "Enforce DenyList".
 
-10. Reboot the system.
+11. Reboot the system.
 
 ### Install Magisk Module
 
-```
 1. Install Magisk Module.
 
 - https://github.com/NVISOsecurity/MagiskTrustUserCerts/releases
@@ -138,13 +139,13 @@ Install as needed
 
 - https://github.com/LSPosed/LSPosed.github.io/releases
 
-### Install XposedModule Module 
+### Install Xposed Module
 
-1. Install XposedModule in the "OverrideSysPropModule" folder.
+1. Install Xposed Module in the "OverrideSysPropModule" folder.
 
-````
+````sh
 cd OverrideSysPropModule\app\release
-adb install app-release.apk
+adb install OverrideSysprop.apk
 ````
 
 2. Install a Root certificate such as Burp for user certificates.
@@ -153,4 +154,4 @@ adb install app-release.apk
 
 ![OverrideSysProp](images/OverrideSysProp.png)
 
-TIP: After enabling XposedModule, it may not be recognized properly unless the Android device is rebooted.
+TIP: After enabling Xposed Module, it may not be recognized properly unless the Android device is rebooted.
